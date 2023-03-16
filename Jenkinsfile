@@ -1,67 +1,26 @@
 pipeline {
-    agent { label 'ubuntu' }
-    stages {
-        stage('vcs') {
-            steps {
-                git url: 'https://github.com/Madhuri-chinta/spring-petclinic.git',
-                    branch: 'develop'
-            }
+  agent { node { label 'ubuntu' } }
+  stages { 
+      stage ('git') {
+        steps { 
+          git url: 'https://github.com/spring-projects/spring-petclinic.git',
+          branch: 'main'
+      }
+      }
+      stage ('build') { 
+        steps {  
+          sh './mvnw package'
+      }
+    }
+      stage ('download the package') { 
+        steps { 
+          sh 'sudo cp ${WORKSPACE}/target/spring-petclinic-3.0.0-SNAPSHOT.jar /tmp/archive'
+          }
+    }
+      stage ('upload to s3') { 
+        steps { 
+          sh 'aws s3 cp /tmp/archive/spring-petclinic-3.0.0-SNAPSHOT.jar s3://springpetclinic16feb/target/'
         }
-        stage('package') {
-            steps {
-                sh './mvnw package'
-            }
-        }
-        stage('sonarqube analysis') {
-            steps {
-                withSonarQubeEnv('madhuri') {
-                    sh 'mvn clean package sonar:sonar'
-                }
-            }
-        } 
-        stage ('Artifactory configuration') {
-            steps {
-            
-                rtMavenDeployer (
-                    id: "jfrog",
-                    serverId: "madhuri",
-                    releaseRepo: "madhuri",
-                    snapshotRepo: "madhuri"
-                )
-            }
-        }
-
-        stage ('Exec Maven') {
-            steps {
-                rtMavenRun (
-                    tool: "MAVEN_GOAL", // Tool name from Jenkins configuration
-                    pom: 'pom.xml',
-                    goals: 'clean install',
-                    deployerId: "jfrog"
-                )
-            }
-        }
-
-        stage ('Publish build info') {
-            steps {
-                rtPublishBuildInfo (
-                    serverId: "madhuri"
-                )
-            }
-        }   
-        stage('post build') {
-            steps {
-                archiveArtifacts artifacts: '**/target/*.jar',
-                                 onlyIfSuccessful: true
-                junit testResults: '**/surefire-reports/TEST-*.xml'
-            }
-        }
-        stage('deploy') {
-            agent any
-            steps {
-                sh 'ansible -i ./ansible/hosts -m ping all'
-                sh 'ansible-playbook -i ./ansible/hosts ./ansible/spc.yaml'
-            }
-        }    
+      }
     }
 }
