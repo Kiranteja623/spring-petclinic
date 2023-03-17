@@ -1,5 +1,7 @@
 pipeline {
   agent { node { label 'ubuntu' } }
+  triggers {
+        cron('* * * * *')
   stages {
     stage ('git') {
       steps {
