@@ -24,5 +24,10 @@ pipeline {
           sh 'sudo cp ${WORKSPACE}/target/spring-petclinic-3.0.0-SNAPSHOT.jar /tmp/archive'
           }
     }
+    stage ('deploy the package using ansible') {
+      steps {
+        sh 'ansible-playbook -i host  spc.yaml'
+      }
+    }
 }
 }
