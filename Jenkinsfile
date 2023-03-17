@@ -1,22 +1,50 @@
 pipeline {
   agent { node { label 'ubuntu' } }
-  stages {
-    stage ('git') {
-      steps {
-      git url: 'https://github.com/Kiranteja623/spring-petclinic.git'
+  stages { 
+      stage ('git') {
+        steps { 
+          git url: 'https://github.com/spring-projects/spring-petclinic.git',
+          branch: 'main'
+      }
+      }
+      stage ('build') { 
+        steps {  
+          sh './mvnw package'
+      }
     }
+      stage ('download the package') { 
+        steps { 
+          sh 'sudo cp ${WORKSPACE}/target/spring-petclinic-3.0.0-SNAPSHOT.jar /home/ubuntu/spc'
+          }
     }
-    stage ('package') {
-      steps {
-          sh 'mvn package'
-    }
-    }
-    stage ('sonarqube') {
-        steps {
-          withSonarQubeEnv('Kiranteja623') {
-                    sh 'mvn clean package sonar:sonar -Dsonar.organization=kiranteja623 -Dsonar.login=ddfb007e5e67490bc157bd464d92bdfd2690f1d2 -Dsonar.host.url=https://sonarcloud.io -Dsonar.projectKey=kiranteja623/petclinic'
-                }
+      stage ('deployment') { 
+        steps { 
+          sh 'ansible-playbook -i host spc-playbook.yaml'
         }
-  }
+      }
+    }
 }
-}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
