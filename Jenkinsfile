@@ -1,7 +1,7 @@
 pipeline {
   agent { node { label 'ubuntu' } }
   triggers {
-        cron('* * * * *')
+        pollSCM('* * * * *')
   stages {
     stage ('git') {
       steps {
