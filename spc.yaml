@@ -1,6 +1,6 @@
 ---
 - name: spc deployment
-  hosts: all
+  hosts: localhost
   become: yes
   tasks:
     - name: install java
