@@ -13,11 +13,6 @@
         path: spc/
         state: "directory"
         mode: '777'
-    - name: get url
-      ansible.builtin.get_url:
-        dest: /tmp/
-        url: https://springpetclinic16feb.s3.ap-northeast-1.amazonaws.com/spring-petclinic-3.0.0-SNAPSHOT.jar
-        mode: '777'
     - name: copy the content
       ansible.builtin.copy:
         src: /tmp/spring-petclinic-3.0.0-SNAPSHOT.jar
