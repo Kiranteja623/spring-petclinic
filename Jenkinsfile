@@ -15,13 +15,12 @@ pipeline {
     }
       stage ('download the package') { 
         steps { 
-          sh 'sudo cp ${WORKSPACE}/target/spring-petclinic-3.0.0-SNAPSHOT.jar /tmp/archive'
+          sh 'sudo cp ${WORKSPACE}/target/spring-petclinic-3.0.0-SNAPSHOT.jar /home/ubuntu/spc'
           }
     }
     stage ('deploy the package using ansible') {
-      agent { node { label 'master' } }
       steps {
-        sh 'ansible -i /home/ansible/var/lib/jenkins/workspace/spconrelease/hosts -m ping all'
+        sh 'ansible-playbook -i host spc.yaml'
       }
     }
 }
