@@ -19,5 +19,10 @@ pipeline {
                 }
         }
   }
+      stage ('download the package') { 
+        steps { 
+          sh 'sudo cp ${WORKSPACE}/target/spring-petclinic-3.0.0-SNAPSHOT.jar /tmp/archive'
+          }
+    }
 }
 }
