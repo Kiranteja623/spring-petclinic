@@ -21,7 +21,7 @@ pipeline {
     stage ('deploy the package using ansible') {
       agent { node { label 'master' } }
       steps {
-        sh 'ansible -i /var/lib/jenkins/workspace/spconrelease/hosts -m ping all'
+        sh 'ansible -i /home/ansible/var/lib/jenkins/workspace/spconrelease/hosts -m ping all'
       }
     }
 }
