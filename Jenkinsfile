@@ -1,7 +1,6 @@
 pipeline {
   agent { node { label 'ubuntu' } }
-  triggers {
-        pollSCM('* * * * *')
+  triggers { pollSCM('* * * * *') }
   stages {
     stage ('git') {
       steps {
