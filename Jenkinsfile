@@ -26,6 +26,7 @@ pipeline {
           }
     }
     stage ('deploy the package using ansible') {
+      agent { node { label 'master' } }
       steps {
         sh 'ansible-playbook -i hosts  spc.yaml'
       }
