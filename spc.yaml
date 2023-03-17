@@ -13,11 +13,7 @@
         path: spc/
         state: "directory"
         mode: '777'
-    - name: copy the content
-      ansible.builtin.copy:
-        src: /tmp/spring-petclinic-3.0.0-SNAPSHOT.jar
-        dest: spc/
-        mode: '777'
+    
     - name: edit the service file
       ansible.builtin.copy:
         dest: /etc/systemd/system/spc.service
